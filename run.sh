@@ -9,7 +9,7 @@ cd ..
 
 
 apt-get update
-apt-get install -y vim software-properties-common git-lfs
+apt-get install -y vim software-properties-common git-lfs curl
 curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
 
 curl -s https://get.modular.com | sh -

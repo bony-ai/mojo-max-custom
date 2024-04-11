@@ -1,8 +1,8 @@
 .PHONY: all setup mojo install run
 
-all: setup install mojo run
+all: setup-env mojo install run
 
-setup:
+setup-env:
 	apt-get update
 	apt-get install -y vim software-properties-common git-lfs
 	curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
@@ -13,12 +13,13 @@ mojo:
 	modular auth
 	modular install max
 
-	$(eval MAX_PATH := $(shell modular config max.path))
-	python3 -m pip install --find-links $(MAX_PATH)/wheels max-engine
+	MAX_PATH=$(shell modular config max.path) && python3 -m pip install --find-links $(MAX_PATH)/wheels max-engine
 
-	MAX_PATH=$(modular config max.path) && \
-	echo 'export MODULAR_HOME="$$HOME/.modular"' >> ~/.profile
-	echo 'export PATH="$(MAX_PATH)/bin:$$PATH"' >> ~/.profile
+	MAX_PATH=$(shell modular config max.path) \
+	&& BASHRC=$( [ -f "$(HOME)/.bash_profile" ] && echo "$(HOME)/.bash_profile" || echo "$(HOME)/.bashrc" ) \
+	&& echo 'export MODULAR_HOME="'$(HOME)'/.modular"' >> "$(BASHRC)" \
+	&& echo 'export PATH="'$(MAX_PATH)'/bin:$(PATH)"' >> "$(BASHRC)" \
+	&& source "$(BASHRC)"
 
 install:
 	git clone https://huggingface.co/casperhansen/mixtral-instruct-awq
@@ -26,6 +27,11 @@ install:
 	git lfs install
 	cd ..
 
+	pip3 install transformers max
+
+
+
 run:
+	. "$(BASHRC)" && \
 	. ~/.profile && \
 	mojo main.🔥

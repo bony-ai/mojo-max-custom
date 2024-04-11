@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY ./ ./
 
-ENTRYPOINT "run.sh"
+CMD "./run.sh"

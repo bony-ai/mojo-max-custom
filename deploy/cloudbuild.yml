@@ -1,0 +1,11 @@
+steps:
+  - name: 'gcr.io/kaniko-project/executor:latest'
+    args:
+      - --destination=gcr.io/${PROJECT_ID}/run-mojo:latest
+      - --cache=true
+      - --cache-ttl=360h
+      - --cache-repo=gcr.io/${PROJECT_ID}/kaniko-cache/mojo
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
